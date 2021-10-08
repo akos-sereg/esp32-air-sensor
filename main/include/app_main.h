@@ -13,5 +13,6 @@
 #include "rom/uart.h"
 
 #include "led_bars.h"
+#include "mq7.h"
 
 #endif
