@@ -15,21 +15,40 @@ void led_bars_set(int column1, int column2, int column3) {
         return;
     }
 
+    gpio_set_level(LED_STRIP_LATCH_GPIO, 1);
+    gpio_set_level(LED_STRIP_LATCH_GPIO, 0);
+
     for (int i=0; i!=10; i++) {
         gpio_set_level(LED_STRIP_CLOCK_GPIO, 0);
-        gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column3) < i ? 1 : 0);
+        if (i == 9) {
+            gpio_set_level(LED_STRIP_DATA_GPIO, 0);
+        } else {
+            gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column3) < i ? 1 : 0);
+        }
+        //gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column3) < i ? 1 : 0);
 	    gpio_set_level(LED_STRIP_CLOCK_GPIO, 1);
     }
 
     for (int i=0; i!=10; i++) {
         gpio_set_level(LED_STRIP_CLOCK_GPIO, 0);
-        gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column2) < i ? 1 : 0);
+        if (i == 9) {
+            gpio_set_level(LED_STRIP_DATA_GPIO, 0);
+        } else {
+            gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column2) < i ? 1 : 0);
+        }
+        //gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column2) < i ? 1 : 0);
         gpio_set_level(LED_STRIP_CLOCK_GPIO, 1);
     }
 
     for (int i=0; i!=10; i++) {
         gpio_set_level(LED_STRIP_CLOCK_GPIO, 0);
-        gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column1) < i ? 1 : 0);
+        if (i == 9) {
+            gpio_set_level(LED_STRIP_DATA_GPIO, 0);
+        } else {
+            gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column1) < i ? 1 : 0);
+        }
+        // gpio_set_level(LED_STRIP_DATA_GPIO, (9 - column1) < i ? 1 : 0);
+
         gpio_set_level(LED_STRIP_CLOCK_GPIO, 1);
     }
 
