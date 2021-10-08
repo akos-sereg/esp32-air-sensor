@@ -8,6 +8,7 @@ void main_task(void * pvParameter)
     int co2_new;
     int temp_new;
     float co_ppm;
+    int lpg_mvolts;
 
     /**
      * https://www.kane.co.uk/knowledge-centre/what-are-safe-levels-of-co-and-co2-in-rooms
@@ -32,6 +33,9 @@ void main_task(void * pvParameter)
     //                      G  G   G   G   Y   Y   Y    R    R
     int co_thresholds[] = { 0, 15, 30, 45, 60, 80, 100, 200, 300};
 
+    //                       G  G    G     G     Y     Y     Y     R     R
+    int lpg_thresholds[] = { 0, 100, 150, 200, 300, 400, 500, 800, 1085 };
+
     led_bars_demo();
     led_bars_demo();
     led_bars_demo();
@@ -41,6 +45,7 @@ void main_task(void * pvParameter)
         co2_new = app_mhz19_get_co2();
         temp_new = app_mhz19_get_temp();
         co_ppm = mq7_getPpm();
+        lpg_mvolts = mq6_getMilliVolts();
         printf("CO2: %d, Temp: %d, CO: %f\n", co2_new, temp_new, co_ppm);
 
         vTaskDelay(tick_rate_ms / portTICK_RATE_MS);
@@ -52,14 +57,21 @@ void main_task(void * pvParameter)
             }
         }
 
-         int co_pos = 1;
+        int co_pos = 1;
         for (int i=0; i!=9; i++) {
             if (co_ppm > co_thresholds[i]) {
                 co_pos++;
             }
         }
 
-        led_bars_set(co2_pos, co_pos, 0);
+        int lpg_pos = 1;
+        for (int i=0; i!=9; i++) {
+            if (lpg_mvolts > lpg_thresholds[i]) {
+                lpg_pos++;
+            }
+        }
+
+        led_bars_set(co2_pos, co_pos, lpg_pos);
     }
 }
 

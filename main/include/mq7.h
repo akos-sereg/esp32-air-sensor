@@ -26,4 +26,6 @@ extern float mq7_voltageConversion(int value);
 extern float mq7_getRatio();
 extern float mq7_getPpm();
 
+uint32_t mq6_getMilliVolts();
+
 #endif
