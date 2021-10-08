@@ -97,7 +97,7 @@ void mq7_setup_internal(void *pvParameters) {
             printf("Raw MQ6: %d\tVoltage: %dmV\n", adc_reading_mq6, voltage_mq6);
         }
 
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        vTaskDelay(pdMS_TO_TICKS(4000));
     }
 }
 

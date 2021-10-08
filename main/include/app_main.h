@@ -14,5 +14,7 @@
 
 #include "led_bars.h"
 #include "mq7.h"
+#include "http.h"
+#include "networking.h"
 
 #endif

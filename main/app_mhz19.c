@@ -31,7 +31,7 @@ void app_mhz19_task(void* unused)
 
 	while (1)
 	{
-		vTaskDelay(pdMS_TO_TICKS(1000));
+		vTaskDelay(pdMS_TO_TICKS(4000));
 
 		// ESP_LOGI(TAG, "Reading data");
 		err = mhz19_retrieve_data();
