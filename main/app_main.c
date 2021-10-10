@@ -27,7 +27,7 @@ void main_task()
      * > 40000 ppm: Exposure may lead to serious oxygen deprivation resulting in permanent brain damage, coma, even death.
      */
     //                       G  G    G     G     Y     Y     Y     R     R
-    int co2_thresholds[] = { 0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000};
+    int co2_thresholds[] = { 0, 250, 500,  750,  1000, 1333, 1666, 2000, 2500};
 
     /**
      * https://www.kidde.com/home-safety/en/us/support/help-center/browse-articles/articles/what_are_the_carbon_monoxide_levels_that_will_sound_the_alarm_.html
