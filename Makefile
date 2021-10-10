@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := esp32-obd2-v2
+PROJECT_NAME := esp32-air-sensor
 
 COMPONENT_ADD_INCLUDEDIRS := components/include
 

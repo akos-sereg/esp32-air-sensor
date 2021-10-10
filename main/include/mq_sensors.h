@@ -6,7 +6,7 @@
 
 //Load resistance 10 Kohms on the sensor potentiometer
 //#define R_Load 10.0
-#define R_Load 1.0
+// #define R_Load 1.0
 
 #define MG7_V_IN    5.0
 
@@ -19,13 +19,12 @@
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
 
-extern void mq7_setup(void);
-extern void mq7_setup_internal(void *pvParameters);
-extern int mq7_analogRead();
-extern float mq7_voltageConversion(int value);
-extern float mq7_getRatio();
-extern float mq7_getPpm();
-
-uint32_t mq6_getMilliVolts();
+extern void mq_sensors_setup_async(void);
+extern void mq_sensors_setup_internal(void *pvParameters);
+extern int mq_sensors_analog_read();
+extern float mq_sensors_voltage_conversion(int value);
+extern float mq_sensors_get_ratio();
+extern float mq_sensors_get_mq7_ppm();
+extern uint32_t mq_sensors_get_mq6_milli_volts();
 
 #endif

@@ -7,8 +7,7 @@
 #include "driver/uart.h"
 #include "freertos/FreeRTOS.h"
 
-#include "include/mhz19.h"
-#include "include/support.h"
+#include "include/3rdparty/mhz19.h"
 
 static const char* TAG = "MHZ19";
 
@@ -99,6 +98,10 @@ void mhz19_send_command(uint8_t command, uint8_t b3, uint8_t b4, uint8_t b5, uin
 
     mhz19_print_buffer(1, cmd);
     mhz19_write(cmd, 9);
+}
+
+static long millis() {
+    return (uint32_t) (clock() * 1000 / CLOCKS_PER_SEC);
 }
 
 size_t mhz19_read(uint8_t data[], uint8_t len)

@@ -6,10 +6,8 @@ sources from: https://github.com/danielealbano/esp32-air-quality-monitor/blob/ma
 #include "esp_log.h"
 #include "driver/uart.h"
 
-#include "include/mhz19.h"
-
-#include "include/app_mhz19.h"
-// #include "support.h"
+#include "include/3rdparty/mhz19.h"
+#include "include/3rdparty/app_mhz19.h"
 
 static const char* TAG = "APP/MHZ19";
 static int co2 = 0;
