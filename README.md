@@ -3,6 +3,9 @@
 ESP32 device using MQ-6 (LPG gas), MQ-7 (CO) and MH-Z19 (CO2) sensors to collect air quality data, 
 and feed to ThingSpeak, and display on 3x10 segment LED bar.
 
+The device right now is wired on a breadboard, but I am planning to assemble a PCB and put it into a plastic case. 
+It can be hidden anywhere in the room, connected to a standard 5V micro-USB as power supply.
+
 ![ESP32 with CO2 sensor](https://raw.githubusercontent.com/akos-sereg/esp32-air-sensor/master/docs/wired.png)
 
 ![Mobile Screenshot](https://raw.githubusercontent.com/akos-sereg/esp32-air-sensor/master/docs/mobile-display.png)
