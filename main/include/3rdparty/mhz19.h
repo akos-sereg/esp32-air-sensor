@@ -1,7 +1,8 @@
 #ifndef MHZ19_H
 #define MHZ19_H
 
-#define MHZ19_REQUEST_TIMEOUT_PERIOD 1200
+#include "include/config.h"
+
 #define MHZ19_PRINT_BUFFER 1
 
 enum mhz19_err

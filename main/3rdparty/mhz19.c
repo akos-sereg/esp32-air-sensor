@@ -115,7 +115,7 @@ size_t mhz19_read(uint8_t data[], uint8_t len)
 	{
 		ESP_ERROR_CHECK(uart_get_buffered_data_len(_uart_num, (size_t*)&length));
 
-		if (millis() - start_millis >= MHZ19_REQUEST_TIMEOUT_PERIOD)
+		if (millis() - start_millis >= CO2_REQUEST_TIMEOUT_PERIOD)
 		{
 			ESP_LOGW(TAG, "Timed out waiting for response");
 			return MHZ19_ERR_TIMEOUT;

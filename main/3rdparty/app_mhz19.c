@@ -29,7 +29,7 @@ void app_mhz19_task(void* unused)
 
 	while (1)
 	{
-		vTaskDelay(pdMS_TO_TICKS(4000));
+		vTaskDelay(pdMS_TO_TICKS(CO2_MEASUREMENT_INTERVAL_MS));
 
 		// ESP_LOGI(TAG, "Reading data");
 		err = mhz19_retrieve_data();

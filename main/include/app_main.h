@@ -18,5 +18,6 @@
 #include "mq_sensors.h"
 #include "http.h"
 #include "networking.h"
+#include "config.h"
 
 #endif

@@ -1,16 +1,51 @@
 #include "include/app_main.h"
 
+int last_co2_readings[5];
+int last_co2_readings_pos = 0;
+
+void push_last_co2_reading(int co2_ppm) {
+    if (last_co2_readings_pos < 5) {
+        last_co2_readings[last_co2_readings_pos] = co2_ppm;
+        last_co2_readings_pos++;
+        return;
+    } else {
+        for (int i=0; i!=4; i++) {
+            last_co2_readings[i] = last_co2_readings[i+1];
+        }
+
+        last_co2_readings[4] = co2_ppm;
+    }
+}
+
+bool are_co2_readings_constant() {
+    if (last_co2_readings_pos < 5) {
+        printf("[experiment] CO2 reading did not reach 5 yet\n");
+        return false;
+    }
+
+    printf("[experiment] CO2 reading reached 5 \n");
+
+    if (last_co2_readings[0] == last_co2_readings[1] &&
+        last_co2_readings[1] == last_co2_readings[2] &&
+        last_co2_readings[2] == last_co2_readings[3] &&
+        last_co2_readings[3] == last_co2_readings[4]) {
+        printf("[experiment] CO2 levels are the same, restarting\n");
+        return true;
+    }
+
+    printf("[experiment] CO2 levels are not the same, OK\n");
+    return false;
+}
+
 void main_task()
  {
-    //int report_interval_ms = 1800000; // 1 800 000 milliseconds: 30 mins
-    int report_interval_ms = 60000;
-    int elapsed_ms = 0;
+    int elapsed_ms_since_last_report = 0;
+    int warm_up_iterations = WARM_UP_ITERATIONS;
     int tick_rate_ms = 5000;
     int co2_new;
     int temp_new;
     float co_ppm;
     int lpg_mvolts;
-    int wifi_initiated = 0;
     int invalid_data_to_thingspeak_attempt = 0;
 
     int last_co_pos = -1;
@@ -60,17 +95,23 @@ void main_task()
         // wait tick rate in every iteration
         // ------------------------------------------------------------------
         vTaskDelay(tick_rate_ms / portTICK_RATE_MS);
-        elapsed_ms += tick_rate_ms;
+        elapsed_ms_since_last_report += tick_rate_ms;
 
         // report data to ThingSpeak periodically
         // ------------------------------------------------------------------
-        if (elapsed_ms > report_interval_ms) {
-            elapsed_ms = 0;
+        if (elapsed_ms_since_last_report > THINGSPEAK_REPORT_INTERVAL) {
+            elapsed_ms_since_last_report = 0;
             if (co2_new == 0) {
                 // sensor is measuring invalid CO2, avoid sending it to ThingSpeak
                 invalid_data_to_thingspeak_attempt++;
             } else {
-                http_get_task(co2_new, co_ppm, lpg_mvolts);
+                // CO2 sensor needs some warm up time, so we do not send data in he first couple of iterations
+                if (warm_up_iterations == 0) {
+                    http_get_task(co2_new, co_ppm, lpg_mvolts);
+                } else {
+                    warm_up_iterations--;
+                }
+                push_last_co2_reading(co2_new);
                 invalid_data_to_thingspeak_attempt = 0;
             }
         }
@@ -82,11 +123,9 @@ void main_task()
             esp_restart();
         }
 
-        // initialize wifi
-        // ------------------------------------------------------------------
-        if (elapsed_ms == 10000 && !wifi_initiated) {
-            networking_initialize_wifi();
-            wifi_initiated = 1;
+        // restart device if readings got stuck
+        if (are_co2_readings_constant()) {
+            esp_restart();
         }
 
         // calculate led bar positions for each measure
@@ -133,6 +172,7 @@ void app_main()
 {
     app_mhz19_init();
     led_bars_init_shift_registers();
+    networking_initialize_wifi();
     mq_sensors_setup_async();
     main_task();
 }

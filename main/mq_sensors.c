@@ -1,9 +1,5 @@
 #include "include/mq_sensors.h"
 
-#define DEFAULT_VREF    1100        // Use adc2_vref_to_gpio() to obtain a better estimate
-#define NO_OF_SAMPLES   64          // Multisampling
-#define POTMETER_DEBUG_MODE 1
-
 static esp_adc_cal_characteristics_t *adc_chars;
 
 // Channel 3 -> GPIO 39
@@ -92,7 +88,7 @@ void mq_sensors_setup_internal(void *pvParameters) {
             printf("Raw MQ6: %d\tVoltage: %dmV\n", adc_reading_mq6, voltage_mq6);
         }
 
-        vTaskDelay(pdMS_TO_TICKS(4000));
+        vTaskDelay(pdMS_TO_TICKS(MQ_MEASUREMENT_INTERVAL_MS));
     }
 }
 
