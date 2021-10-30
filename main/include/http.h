@@ -17,6 +17,6 @@
 
 #include "config.h"
 
-extern void http_get_task(int co_ppm, int co2_ppm, int lpg_mv);
+extern void http_get_task(int co_ppm, float hum, float temp);
 
 #endif

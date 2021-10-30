@@ -106,6 +106,7 @@ static long millis() {
 
 size_t mhz19_read(uint8_t data[], uint8_t len)
 {
+    long elapsed = 0;
     size_t length;
 	unsigned long start_millis = millis();
 
@@ -115,7 +116,8 @@ size_t mhz19_read(uint8_t data[], uint8_t len)
 	{
 		ESP_ERROR_CHECK(uart_get_buffered_data_len(_uart_num, (size_t*)&length));
 
-		if (millis() - start_millis >= CO2_REQUEST_TIMEOUT_PERIOD)
+        elapsed = millis() - start_millis;
+		if (elapsed >= CO2_REQUEST_TIMEOUT_PERIOD)
 		{
 			ESP_LOGW(TAG, "Timed out waiting for response");
 			return MHZ19_ERR_TIMEOUT;
@@ -128,6 +130,7 @@ size_t mhz19_read(uint8_t data[], uint8_t len)
 	length = uart_read_bytes(_uart_num, data, len, 100);
     mhz19_print_buffer(0, data);
 
+    printf("MHZ19 returned in %ld milliseconds\n", elapsed);
     return length;
 }
 

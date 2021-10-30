@@ -19,7 +19,7 @@ static const char *REQUEST = "Host: "WEB_SERVER":"WEB_PORT"\r\n"
     "User-Agent: esp-idf/1.0 esp32\r\n"
     "\r\n";
 
-void http_get_task(int co_ppm, int co2_ppm, int lpg_mv)
+void http_get_task(int co_ppm, float hum, float temp)
 {
     const struct addrinfo hints = {
         .ai_family = AF_INET,
@@ -66,7 +66,7 @@ void http_get_task(int co_ppm, int co2_ppm, int lpg_mv)
     freeaddrinfo(res);
 
     char request[1024];
-    sprintf(request, "GET /update.json?api_key=%s&field1=%d&field2=%d&field3=%d HTTP/1.0\r\n%s", THINGSPEAK_API_KEY, co_ppm, co2_ppm, lpg_mv, REQUEST);
+    sprintf(request, "GET /update.json?api_key=%s&field1=%d&field2=%.2f&field3=%.2f HTTP/1.0\r\n%s", THINGSPEAK_API_KEY, co_ppm, hum, temp, REQUEST);
 
     if (write(s, request, strlen(request)) < 0) {
         ESP_LOGE(TAG, "... socket send failed");
