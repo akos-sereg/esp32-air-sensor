@@ -10,7 +10,6 @@ sources from: https://github.com/danielealbano/esp32-air-quality-monitor/blob/ma
 #include "include/3rdparty/app_mhz19_init.h"
 #include "include/3rdparty/app_mhz19.h"
 
-#define UART_BAUD_RATE 9600
 #define UART_PIN_RX 34  // TX on device
 #define UART_PIN_TX 26 // RX on device
 
