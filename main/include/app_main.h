@@ -10,14 +10,18 @@
 #include "driver/i2c.h"
 #include "esp_log.h"
 #include "sdkconfig.h"
-#include "rom/uart.h"
+#include "esp32/rom/uart.h"
 
 #include "3rdparty/app_mhz19_init.h"
 #include "3rdparty/app_mhz19.h"
 #include "3rdparty/dht.h"
 #include "led_bars.h"
 #include "http.h"
-#include "networking.h"
 #include "config.h"
+
+#include "uconfy.h"
+/*#include "networking.h"
+#include "config_poll.h"
+#include "nvs.h"*/
 
 #endif

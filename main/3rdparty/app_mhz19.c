@@ -27,13 +27,15 @@ void app_mhz19_task(void* unused)
 {
 	mhz19_err_t err;
 
+    int measure_count = 0;
+    int measrure_success = 0;
 	while (1)
 	{
 		vTaskDelay(pdMS_TO_TICKS(CO2_MEASUREMENT_INTERVAL_MS));
 
 		// ESP_LOGI(TAG, "Reading data");
 		err = mhz19_retrieve_data();
-
+        measure_count++;
 		if (err != MHZ19_ERR_OK)
 		{
 			switch(err)
@@ -63,11 +65,27 @@ void app_mhz19_task(void* unused)
 					break;
 			}
 
+			if (measure_count != 0) {
+                printf("CO2 success rate: %f\n", (float)((measrure_success*100) / measure_count));
+            }
+
 			continue;
+		} else {
+		    measrure_success++;
 		}
 
 		co2 = mhz19_get_co2();
 		temp = mhz19_get_temperature();
+
+		if (measure_count == INT_MAX) {
+		    measure_count = 0;
+		    measrure_success = 0;
+		}
+
+		if (measure_count != 0) {
+		    printf("CO2 success rate: %f\n", (float)((measrure_success*100) / measure_count));
+		}
+
 
 		// ESP_LOGI(TAG, "CO2: %d", co2);
 		// ESP_LOGI(TAG, "Temperature: %d", temp);

@@ -5,7 +5,7 @@
 
 PROJECT_NAME := esp32-air-sensor
 
-COMPONENT_ADD_INCLUDEDIRS := components/include
+# COMPONENT_ADD_INCLUDEDIRS := components/include
 
 include $(IDF_PATH)/make/project.mk
 

@@ -15,6 +15,8 @@
 #include "lwip/netdb.h"
 #include "lwip/dns.h"
 
+#include "logging.h"
+
 #include "config.h"
 
 extern void http_get_task(int co_ppm, float hum, float temp);

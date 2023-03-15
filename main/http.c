@@ -29,12 +29,14 @@ void http_get_task(int co_ppm, float hum, float temp)
     struct in_addr *addr;
     int s, r;
     char recv_buf[64];
-
+    char log[256];
 
     int err = getaddrinfo(WEB_SERVER, WEB_PORT, &hints, &res);
 
     if(err != 0 || res == NULL) {
         ESP_LOGE(TAG, "DNS lookup failed err=%d res=%p", err, res);
+        sprintf(log, "DNS lookul failed while connecting to ThingSpeak");
+        uconfy_log(log);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         return;
     }
@@ -49,6 +51,8 @@ void http_get_task(int co_ppm, float hum, float temp)
     if(s < 0) {
         ESP_LOGE(TAG, "... Failed to allocate socket.");
         freeaddrinfo(res);
+        sprintf(log, "Failed to allocate socket while connecting to ThingSpeak");
+        uconfy_log(log);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         return;
     }
@@ -58,6 +62,8 @@ void http_get_task(int co_ppm, float hum, float temp)
         ESP_LOGE(TAG, "... socket connect failed errno=%d", errno);
         close(s);
         freeaddrinfo(res);
+        sprintf(log, "Socket connect failed while connecting to ThingSpeak");
+        uconfy_log(log);
         vTaskDelay(4000 / portTICK_PERIOD_MS);
         return;
     }
@@ -71,6 +77,8 @@ void http_get_task(int co_ppm, float hum, float temp)
     if (write(s, request, strlen(request)) < 0) {
         ESP_LOGE(TAG, "... socket send failed");
         close(s);
+        sprintf(log, "Socket send failed while connecting to ThingSpeak");
+        uconfy_log(log);
         vTaskDelay(4000 / portTICK_PERIOD_MS);
         return;
     }
@@ -83,6 +91,8 @@ void http_get_task(int co_ppm, float hum, float temp)
             sizeof(receiving_timeout)) < 0) {
         ESP_LOGE(TAG, "... failed to set socket receiving timeout");
         close(s);
+        sprintf(log, "Failed to receive data from socket while connecting to ThingSpeak");
+        uconfy_log(log);
         vTaskDelay(4000 / portTICK_PERIOD_MS);
         return;
     }
@@ -99,4 +109,12 @@ void http_get_task(int co_ppm, float hum, float temp)
 
     ESP_LOGI(TAG, "... done reading from socket. Last read return=%d errno=%d.", r, errno);
     close(s);
+
+    sprintf(log, "Data sent to thingspeak [coppm=%d, temp=%.2f, hum=%.2f], current free heap: %d",
+        co_ppm,
+        temp,
+        hum,
+        xPortGetFreeHeapSize()
+    );
+    uconfy_log(log);
 }
