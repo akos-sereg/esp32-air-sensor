@@ -1,5 +1,6 @@
-#ifndef __http_h_included__
-#define __http_h_included__
+#ifndef __fetch_configs_h_included__
+#define __fetch_configs_h_included__
+
 
 #include <string.h>
 #include "freertos/FreeRTOS.h"
@@ -8,17 +9,16 @@
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "esp_log.h"
-#include "nvs_flash.h"
 #include "lwip/err.h"
 #include "lwip/sockets.h"
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 #include "lwip/dns.h"
 
-#include "logging.h"
+#include "uconfy_networking.h"
+#include "nvs.h"
 
-#include "config.h"
-
-extern void http_get_task(int co2_ppm, float hum, float temp, float co_ppm);
+extern char response_payload[1024];
+extern void uconfy_fetch_configs(void (*configs_fetched_callback)());
 
 #endif

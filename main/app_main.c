@@ -51,6 +51,7 @@ void main_task()
     int16_t humidity = 0;
     float hum = 0.0;
     float temp = 0.0;
+    float co_ppm = 0;
 
     int last_co2_pos = -1;
 
@@ -90,7 +91,7 @@ void main_task()
         // ------------------------------------------------------------------
         co2_new = app_mhz19_get_co2();
         // temp_new = app_mhz19_get_temp();
-        // co_ppm = mq_sensors_get_mq7_ppm();
+        co_ppm = mq_sensors_get_mq7_ppm();
         // lpg_mvolts = mq_sensors_get_mq6_milli_volts();
 
 
@@ -110,19 +111,38 @@ void main_task()
         // ------------------------------------------------------------------
         if (elapsed_ms_since_last_report > THINGSPEAK_REPORT_INTERVAL) {
             elapsed_ms_since_last_report = 0;
+
             if (co2_new == 0) {
+                // sensor is measuring invalid CO2, avoid sending it to ThingSpeak
+                invalid_data_to_thingspeak_attempt++;
+            } else {
+                invalid_data_to_thingspeak_attempt = 0;
+            }
+
+            // CO2 sensor needs some warm up time, so we do not send data in he first couple of iterations
+            if (warm_up_iterations == 0) {
+                printf("Reporting: CO2=%d hum=%f temp=%f co=%f\n", co2_new, hum, temp, co_ppm);
+                http_get_task(co2_new, hum, temp, co_ppm);
+            } else {
+                warm_up_iterations--;
+            }
+
+            push_last_co2_reading(co2_new);
+
+            /*if (co2_new == 0) {
                 // sensor is measuring invalid CO2, avoid sending it to ThingSpeak
                 invalid_data_to_thingspeak_attempt++;
             } else {
                 // CO2 sensor needs some warm up time, so we do not send data in he first couple of iterations
                 if (warm_up_iterations == 0) {
-                    http_get_task(co2_new, hum, temp);
+                    printf("Reporting: CO2=%d hum=%f temp=%f co=%f\n", co2_new, hum, temp, co_ppm);
+                    http_get_task(co2_new, hum, temp, co_ppm);
                 } else {
                     warm_up_iterations--;
                 }
                 push_last_co2_reading(co2_new);
                 invalid_data_to_thingspeak_attempt = 0;
-            }
+            }*/
 
             uconfy_flush_logs();
             uconfy_fetch_configs(NULL);
@@ -178,6 +198,7 @@ void app_main()
 {
     app_mhz19_init();
     led_bars_init_shift_registers();
+    mq_sensors_setup_async();
 
     uconfy_load_from_nvs();
     uconfy_initialize_wifi(EXAMPLE_WIFI_SSID, EXAMPLE_WIFI_PASS, 1, &wifi_connected);

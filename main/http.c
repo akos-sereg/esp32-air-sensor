@@ -19,7 +19,7 @@ static const char *REQUEST = "Host: "WEB_SERVER":"WEB_PORT"\r\n"
     "User-Agent: esp-idf/1.0 esp32\r\n"
     "\r\n";
 
-void http_get_task(int co_ppm, float hum, float temp)
+void http_get_task(int co2_ppm, float hum, float temp, float co_ppm)
 {
     const struct addrinfo hints = {
         .ai_family = AF_INET,
@@ -72,7 +72,12 @@ void http_get_task(int co_ppm, float hum, float temp)
     freeaddrinfo(res);
 
     char request[1024];
-    sprintf(request, "GET /update.json?api_key=%s&field1=%d&field2=%.2f&field3=%.2f HTTP/1.0\r\n%s", THINGSPEAK_API_KEY, co_ppm, hum, temp, REQUEST);
+
+    if (co2_ppm == 0) {
+        sprintf(request, "GET /update.json?api_key=%s&field2=%.2f&field3=%.2f&field4=%.2f HTTP/1.0\r\n%s", THINGSPEAK_API_KEY, hum, temp, co_ppm, REQUEST);
+    } else {
+        sprintf(request, "GET /update.json?api_key=%s&field1=%d&field2=%.2f&field3=%.2f&field4=%.2f HTTP/1.0\r\n%s", THINGSPEAK_API_KEY, co2_ppm, hum, temp, co_ppm, REQUEST);
+    }
 
     if (write(s, request, strlen(request)) < 0) {
         ESP_LOGE(TAG, "... socket send failed");
@@ -110,10 +115,11 @@ void http_get_task(int co_ppm, float hum, float temp)
     ESP_LOGI(TAG, "... done reading from socket. Last read return=%d errno=%d.", r, errno);
     close(s);
 
-    sprintf(log, "Data sent to thingspeak [coppm=%d, temp=%.2f, hum=%.2f], current free heap: %d",
-        co_ppm,
+    sprintf(log, "Data sent to thingspeak [co2ppm=%d, temp=%.2f, hum=%.2f, coppm=%.2f], current free heap: %d",
+        co2_ppm,
         temp,
         hum,
+        co_ppm,
         xPortGetFreeHeapSize()
     );
     uconfy_log(log);

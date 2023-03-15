@@ -18,6 +18,7 @@
 #include "led_bars.h"
 #include "http.h"
 #include "config.h"
+#include "mq_sensors.h"
 
 #include "uconfy.h"
 /*#include "networking.h"
