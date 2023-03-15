@@ -84,8 +84,8 @@ void mq_sensors_setup_internal(void *pvParameters) {
         voltage_mq6 = esp_adc_cal_raw_to_voltage(adc_reading_mq6, adc_chars);
 
         if (POTMETER_DEBUG_MODE == 1) {
-            printf("Raw MQ7: %d\tVoltage: %dmV\n", adc_reading_mq7, voltage_mq7);
-            printf("Raw MQ6: %d\tVoltage: %dmV\n", adc_reading_mq6, voltage_mq6);
+            // printf("Raw MQ7: %d\tVoltage: %dmV\n", adc_reading_mq7, voltage_mq7);
+            // printf("Raw MQ6: %d\tVoltage: %dmV\n", adc_reading_mq6, voltage_mq6);
         }
 
         vTaskDelay(pdMS_TO_TICKS(MQ_MEASUREMENT_INTERVAL_MS));

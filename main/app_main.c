@@ -39,13 +39,15 @@ bool are_co2_readings_constant() {
 
 void main_task()
  {
+    long elapsed_ms = 0;
     int elapsed_ms_since_last_report = 0;
     int warm_up_iterations = WARM_UP_ITERATIONS;
-    int tick_rate_ms = 5000;
-    int co2_new;
-    int temp_new;
+    // int tick_rate_ms = 5000;
+    int tick_rate_ms = 60000;
+    int co2_new = 0;
+    int temp_new = 0;
     float co_ppm;
-    int lpg_mvolts;
+    int lpg_mvolts = 0;
     int invalid_data_to_thingspeak_attempt = 0;
 
     int last_co_pos = -1;
@@ -78,24 +80,20 @@ void main_task()
     //                       G  G    G    G    Y    Y    Y    R    R
     int lpg_thresholds[] = { 0, 200, 300, 400, 500, 600, 700, 800, 1085 };
 
-    led_bars_demo();
-    led_bars_demo();
-    led_bars_demo();
-    led_bars_reset();
-
     while(1) {
         // get measures from sensors
         // ------------------------------------------------------------------
-        co2_new = app_mhz19_get_co2();
-        temp_new = app_mhz19_get_temp();
+        // co2_new = app_mhz19_get_co2();
+        // temp_new = app_mhz19_get_temp();
         co_ppm = mq_sensors_get_mq7_ppm();
-        lpg_mvolts = mq_sensors_get_mq6_milli_volts();
-        printf("CO2: %d, Temp: %d, CO: %f\n", co2_new, temp_new, co_ppm);
+        // lpg_mvolts = mq_sensors_get_mq6_milli_volts();
+        printf("[elapsed %ld minutes] CO: %f\n", (elapsed_ms / 1000 / 60), co_ppm);
 
         // wait tick rate in every iteration
         // ------------------------------------------------------------------
         vTaskDelay(tick_rate_ms / portTICK_RATE_MS);
         elapsed_ms_since_last_report += tick_rate_ms;
+        elapsed_ms += tick_rate_ms;
 
         // report data to ThingSpeak periodically
         // ------------------------------------------------------------------
@@ -120,13 +118,13 @@ void main_task()
         // (eg. sensor fails to report correct data)
         // ------------------------------------------------------------------
         if (invalid_data_to_thingspeak_attempt > 5) {
-            esp_restart();
+            // esp_restart();
         }
 
         // restart device if readings got stuck
-        if (are_co2_readings_constant()) {
-            esp_restart();
-        }
+        // if (are_co2_readings_constant()) {
+            // esp_restart();
+        // }
 
         // calculate led bar positions for each measure
         // ------------------------------------------------------------------
@@ -161,18 +159,12 @@ void main_task()
         last_co2_pos = co2_pos;
         last_co_pos = co_pos;
         last_lpg_pos = lpg_pos;
-
-        // update display
-        // ------------------------------------------------------------------
-        led_bars_set(co2_pos, 0, 0);
     }
 }
 
 void app_main()
 {
-    app_mhz19_init();
-    led_bars_init_shift_registers();
-    networking_initialize_wifi();
+    // networking_initialize_wifi();
     mq_sensors_setup_async();
     main_task();
 }

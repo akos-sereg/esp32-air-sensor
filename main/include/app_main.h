@@ -12,9 +12,6 @@
 #include "sdkconfig.h"
 #include "rom/uart.h"
 
-#include "3rdparty/app_mhz19_init.h"
-#include "3rdparty/app_mhz19.h"
-#include "led_bars.h"
 #include "mq_sensors.h"
 #include "http.h"
 #include "networking.h"
