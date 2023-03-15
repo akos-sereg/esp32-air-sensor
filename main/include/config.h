@@ -1,10 +1,10 @@
 #ifndef __sensor_config_h_included__
 #define __sensor_config_h_included__
 
-#define EXAMPLE_WIFI_SSID "Telekom-819159"
-#define EXAMPLE_WIFI_PASS "8278732722845155"
+#define EXAMPLE_WIFI_SSID ""
+#define EXAMPLE_WIFI_PASS ""
 
-#define THINGSPEAK_API_KEY "GOIFWPENK127XYEM"
+#define THINGSPEAK_API_KEY ""
 
 #define CO2_REQUEST_TIMEOUT_PERIOD 200
 #define MQ_MEASUREMENT_INTERVAL_MS 4000
