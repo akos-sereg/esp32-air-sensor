@@ -22,11 +22,8 @@ void push_last_co2_reading(int co2_ppm) {
 
 bool are_co2_readings_constant() {
     if (last_co2_readings_pos < 5) {
-        printf("[experiment] CO2 reading did not reach 5 yet\n");
         return false;
     }
-
-    printf("[experiment] CO2 reading reached 5 \n");
 
     if (last_co2_readings[0] == last_co2_readings[1] &&
         last_co2_readings[1] == last_co2_readings[2] &&
@@ -128,24 +125,7 @@ void main_task()
             }
 
             push_last_co2_reading(co2_new);
-
-            /*if (co2_new == 0) {
-                // sensor is measuring invalid CO2, avoid sending it to ThingSpeak
-                invalid_data_to_thingspeak_attempt++;
-            } else {
-                // CO2 sensor needs some warm up time, so we do not send data in he first couple of iterations
-                if (warm_up_iterations == 0) {
-                    printf("Reporting: CO2=%d hum=%f temp=%f co=%f\n", co2_new, hum, temp, co_ppm);
-                    http_get_task(co2_new, hum, temp, co_ppm);
-                } else {
-                    warm_up_iterations--;
-                }
-                push_last_co2_reading(co2_new);
-                invalid_data_to_thingspeak_attempt = 0;
-            }*/
-
             uconfy_flush_logs();
-            uconfy_fetch_configs(NULL);
         }
 
         // restart device after a couple of unsuccessful attempts
@@ -184,14 +164,7 @@ void main_task()
     }
 }
 
-void uconfy_configurations_fetched() {
-    printf("Configurations successfully fetched from remote server\n");
-    printf("WIFI: %s\n", uconfy_get_string_param("wifi", "fallback-value"));
-}
-
 void wifi_connected() {
-    printf("Connected to Wifi network. Now we can fetch configs.\n");
-    uconfy_fetch_configs(&uconfy_configurations_fetched);
 }
 
 void app_main()
@@ -200,12 +173,10 @@ void app_main()
     led_bars_init_shift_registers();
     mq_sensors_setup_async();
 
-    uconfy_load_from_nvs();
+    // uconfy_load_from_nvs();
     uconfy_initialize_wifi(EXAMPLE_WIFI_SSID, EXAMPLE_WIFI_PASS, 1, &wifi_connected);
     uconfy_init("3a284b9b-d66f-48be-907f-84c2e6e40967", "7612354561234781256347123564");
 
     uconfy_log("Device started");
-
-    // mq_sensors_setup_async();
     main_task();
 }
